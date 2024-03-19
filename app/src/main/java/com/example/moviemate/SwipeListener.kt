@@ -3,18 +3,25 @@ package com.example.moviemate
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.widget.TextView
+import com.example.moviemate.db.MainDatabase
 import kotlin.math.abs
+import com.example.moviemate.entities.Movie
+import java.util.HashSet
 
-class SwipeListener : View.OnTouchListener {
+class SwipeListener (private val context: Context): View.OnTouchListener {
 
+    var setOfUsedMoviesById = HashSet<Int>()
+    private val db = MainDatabase.getDb(context)
     private var downX: Float = 0f
     private var downY: Float = 0f
     private var swiped: Boolean = false
 
-    override fun onTouch(v: View, event: MotionEvent): Boolean {
+    override fun onTouch(v: View, event: MotionEvent ): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 downX = event.x
@@ -71,19 +78,23 @@ class SwipeListener : View.OnTouchListener {
     }
 
     private fun spawnNewCard(v: View) {
-        //val newCardData = getNewCardData()
+        val newCardData = getNewCardData()
         v.apply {
-            // Здесь вы можете установить новые данные для вашей карточки
-            // Например, если у вас есть TextView внутри карточки, вы можете установить новый текст так:
-            // findViewById<TextView>(R.id.card_text).text = newCardData
-            visibility = View.VISIBLE // делаем карточку видимой
-            alpha = 0f // делаем карточку полностью прозрачной
+            visibility = View.VISIBLE
+            alpha = 0f
             animate()
-                // делаем карточку полностью непрозрачной
                 .setDuration(600)
                 .setListener(null)
                 .alpha(1f)
         }
+        val title = v.findViewById<TextView>(R.id.cardTitle)
+        val year = v.findViewById<TextView>(R.id.cardYear)
+        val description = v.findViewById<TextView>(R.id.cardDescription)
+        title.text = newCardData.title
+        year.text = newCardData.year.toString()
+        description.text = newCardData.description
+
+
     }
 
     private fun resetCardPosition(v: View){
@@ -92,6 +103,19 @@ class SwipeListener : View.OnTouchListener {
         animator.duration = 100
         animator.start()
     }
+    private fun getNewCardData() : Movie {
+        val element = db.getDao().getNextCard()
+        if (setOfUsedMoviesById.contains(element.id)){
+            return getNewCardData()
+        }
+        if (setOfUsedMoviesById.size > 19){
+            setOfUsedMoviesById.clear()
+        }
+        setOfUsedMoviesById.add(element.id)
+        return element
+    }
+
+
     companion object {
         private const val SWIPE_THRESHOLD = 100
     }

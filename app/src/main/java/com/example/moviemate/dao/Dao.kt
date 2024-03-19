@@ -1,0 +1,25 @@
+package com.example.moviemate.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import com.example.moviemate.entities.Movie
+
+@Dao
+interface Dao {
+
+
+    @Query("SELECT * FROM movie")
+    fun getAll(): List<Movie>
+
+    @Query("SELECT * FROM movie WHERE id = :moveId")
+    fun getById(moveId: Int): Movie?
+
+    @Insert
+    fun insert(movie: Movie)
+    fun getNextCard(): Movie{
+        var rand : Int = (0 until 20).random()
+        val movie = getById(rand)
+        return movie ?: getNextCard()
+    }
+}
