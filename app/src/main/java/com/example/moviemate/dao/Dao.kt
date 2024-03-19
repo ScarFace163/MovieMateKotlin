@@ -9,10 +9,10 @@ import com.example.moviemate.entities.Movie
 interface Dao {
 
 
-    @Query("SELECT * FROM movie")
+    @Query("SELECT * FROM movieDatabase")
     fun getAll(): List<Movie>
 
-    @Query("SELECT * FROM movie WHERE id = :moveId")
+    @Query("SELECT * FROM movieDatabase WHERE id = :moveId")
     fun getById(moveId: Int): Movie?
 
     @Insert

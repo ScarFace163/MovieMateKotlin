@@ -28,7 +28,7 @@ abstract class MainDatabase  : RoomDatabase(){
                             MainDatabase::class.java,
                             "main_db"
                         )
-                            .createFromAsset("database/movieDataBase.db").build()
+                            .createFromAsset("database/movieDatabase.db").build()
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
