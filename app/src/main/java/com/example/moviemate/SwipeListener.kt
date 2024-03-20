@@ -4,9 +4,11 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
 import android.widget.TextView
 import com.example.moviemate.db.MainDatabase
 import kotlin.math.abs
@@ -95,6 +97,14 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
             val title = v.findViewById<TextView>(R.id.cardTitle)
             val year = v.findViewById<TextView>(R.id.cardYear)
             val description = v.findViewById<TextView>(R.id.cardDescription)
+            val image = v.findViewById<ImageView>(R.id.cardImage)
+            val imageAddress:String ="@drawable/" + newCardData.image
+            val imageId = context.resources.getIdentifier(
+                imageAddress,
+                "drawable",
+                context.packageName)
+            Log.d("Image Download" , imageAddress)
+            image.setImageResource(imageId)
             title.text = newCardData.title
             year.text = newCardData.year.toString()
             description.text = newCardData.description
