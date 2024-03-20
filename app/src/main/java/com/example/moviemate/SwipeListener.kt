@@ -11,6 +11,10 @@ import android.widget.TextView
 import com.example.moviemate.db.MainDatabase
 import kotlin.math.abs
 import com.example.moviemate.entities.Movie
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.HashSet
 
 class SwipeListener (private val context: Context): View.OnTouchListener {
@@ -78,22 +82,23 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
     }
 
     private fun spawnNewCard(v: View) {
-        val newCardData = getNewCardData()
-        v.apply {
-            visibility = View.VISIBLE
-            alpha = 0f
-            animate()
-                .setDuration(600)
-                .setListener(null)
-                .alpha(1f)
+        CoroutineScope(Dispatchers.Main).launch {
+            val newCardData = getNewCardData()
+            v.apply {
+                visibility = View.VISIBLE
+                alpha = 0f
+                animate()
+                    .setDuration(600)
+                    .setListener(null)
+                    .alpha(1f)
+            }
+            val title = v.findViewById<TextView>(R.id.cardTitle)
+            val year = v.findViewById<TextView>(R.id.cardYear)
+            val description = v.findViewById<TextView>(R.id.cardDescription)
+            title.text = newCardData.title
+            year.text = newCardData.year.toString()
+            description.text = newCardData.description
         }
-        val title = v.findViewById<TextView>(R.id.cardTitle)
-        val year = v.findViewById<TextView>(R.id.cardYear)
-        val description = v.findViewById<TextView>(R.id.cardDescription)
-        title.text = newCardData.title
-        year.text = newCardData.year.toString()
-        description.text = newCardData.description
-
 
     }
 
@@ -103,16 +108,17 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
         animator.duration = 100
         animator.start()
     }
-    private fun getNewCardData() : Movie {
-        val element = db.getDao().getNextCard()
-        if (setOfUsedMoviesById.contains(element.id)){
-            return getNewCardData()
-        }
-        if (setOfUsedMoviesById.size > 19){
+    private suspend fun getNewCardData() : Movie  = withContext(Dispatchers.IO){
+        var element:Movie
+        do {
+            element = db.getDao().getNextCard()
+        } while (setOfUsedMoviesById.contains(element.id))
+
+        if (setOfUsedMoviesById.size > 5){
             setOfUsedMoviesById.clear()
         }
         setOfUsedMoviesById.add(element.id)
-        return element
+        return@withContext element
     }
 
 

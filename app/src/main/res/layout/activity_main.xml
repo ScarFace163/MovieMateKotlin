@@ -8,18 +8,18 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="120dp"
         android:layout_marginHorizontal="20dp"
         app:cardCornerRadius="40dp"
 
        >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="643dp"
+            android:layout_width="wrap_content"
+            android:layout_height="655dp"
 
             android:background="#EFC1AE"
             android:orientation="vertical">
