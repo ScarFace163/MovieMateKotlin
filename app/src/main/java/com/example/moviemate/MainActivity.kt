@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.example.moviemate.db.MainDatabase
 
 class MainActivity : AppCompatActivity() {
@@ -11,8 +13,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val card : CardView = findViewById(R.id.card)
-        card.setOnTouchListener(SwipeListener(this))
+        val startMenuFragment = FragmentStartMenu()
+        val transaction : FragmentTransaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.layoutForFragments,startMenuFragment)
+        transaction.commit()
+
         MainDatabase.testDatabaseConnection(this)
     }
 }

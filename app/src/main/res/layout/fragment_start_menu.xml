@@ -6,4 +6,12 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_background">
 
+    <Button
+        android:id="@+id/buttonTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="20dp" />
 </RelativeLayout>
