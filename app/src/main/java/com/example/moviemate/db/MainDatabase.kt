@@ -26,7 +26,7 @@ abstract class MainDatabase  : RoomDatabase(){
                         instance = Room.databaseBuilder(
                             context,
                             MainDatabase::class.java,
-                            "main_db"
+                            "movieDatabase"
                         )
                             .createFromAsset("database/movieDatabase.db").build()
                     } catch (e: Exception) {
@@ -36,25 +36,8 @@ abstract class MainDatabase  : RoomDatabase(){
             }
             return instance!!
         }
-        fun testDatabaseConnection(context: Context) {
-            CoroutineScope(Dispatchers.IO).launch {
-                // Создаем экземпляр базы данных
-                val db = getDb(context)
 
-                // Получаем Dao
-                val dao: Dao = db.getDao()
 
-                // Выполняем тестовый запрос
-                val movies: List<Movie> = dao.getAll()
-
-                // Проверяем результат
-                if (movies.isNotEmpty()) {
-                    Log.d("Connect to db","Подключение к базе данных успешно, получено ${movies.size} фильмов")
-                } else {
-                    Log.d("Connect to db", "Подключение к базе данных успешно, но база данных пуста")
-                }
-            }
-        }
     }
 
 }

@@ -1,13 +1,15 @@
-package com.example.moviemate
+package com.example.moviemate.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.cardview.widget.CardView
-import androidx.fragment.app.FragmentTransaction
+import com.example.moviemate.R
+import com.example.moviemate.SwipeListener
 
 
 class FragmentCardChoosing : Fragment() {
@@ -23,10 +25,16 @@ class FragmentCardChoosing : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         card = view.findViewById(R.id.card)
         card.setOnTouchListener(SwipeListener(requireContext()))
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            // Вернуться на предыдущий фрагмент
+            parentFragmentManager.popBackStack()
+        }
+
     }
+
 
 
 

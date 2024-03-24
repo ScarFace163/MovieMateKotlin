@@ -2,11 +2,9 @@ package com.example.moviemate
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.cardview.widget.CardView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.example.moviemate.db.MainDatabase
+import com.example.moviemate.fragments.FragmentStartMenu
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +16,5 @@ class MainActivity : AppCompatActivity() {
         transaction.replace(R.id.layoutForFragments,startMenuFragment)
         transaction.commit()
 
-        MainDatabase.testDatabaseConnection(this)
     }
 }

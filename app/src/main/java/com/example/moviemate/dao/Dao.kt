@@ -2,6 +2,7 @@ package com.example.moviemate.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.moviemate.entities.Movie
 
@@ -15,7 +16,7 @@ interface Dao {
     @Query("SELECT * FROM movieDatabase WHERE id = :moveId")
     fun getById(moveId: Int): Movie?
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(movie: Movie)
     fun getNextCard(): Movie{
         var rand : Int = (0 until 20).random()

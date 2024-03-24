@@ -1,4 +1,4 @@
-package com.example.moviemate
+package com.example.moviemate.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import com.example.moviemate.R
 
 
 class FragmentStartMenu : Fragment() {
 
-    private lateinit var button:Button
+    private lateinit var buttonStart:Button
+    private lateinit var buttonList:Button
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,12 +25,21 @@ class FragmentStartMenu : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button = view.findViewById(R.id.buttonTest)
+        buttonStart = view.findViewById(R.id.buttonStart)
+        buttonList = view.findViewById(R.id.buttonList)
 
-        button.setOnClickListener {
+        buttonStart.setOnClickListener {
             val cardChoosingFragment = FragmentCardChoosing()
             val transaction : FragmentTransaction = parentFragmentManager.beginTransaction()
             transaction.replace(R.id.layoutForFragments,cardChoosingFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+        buttonList.setOnClickListener {
+            val moviesListFragment = MoviesListFragment()
+            val transaction : FragmentTransaction = parentFragmentManager.beginTransaction()
+            transaction.replace(R.id.layoutForFragments,moviesListFragment)
+            transaction.addToBackStack(null)
             transaction.commit()
         }
     }
