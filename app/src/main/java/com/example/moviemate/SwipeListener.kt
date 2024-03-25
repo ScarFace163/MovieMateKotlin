@@ -10,22 +10,27 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.example.moviemate.db.MainDatabase
 import kotlin.math.abs
 import com.example.moviemate.entities.Movie
+import com.example.moviemate.fragments.FragmentRoundSwap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.HashSet
+import java.util.LinkedList
+import java.util.Queue
 
-class SwipeListener (private val context: Context): View.OnTouchListener {
+class SwipeListener (private val context: Context, private val fragment: Fragment): View.OnTouchListener {
 
-    var setOfUsedMoviesById = HashSet<Int>()
+    var queueOfUsedMoviesById:Queue<Movie> = LinkedList<Movie>()
     private val db = MainDatabase.getDb(context)
     private var downX: Float = 0f
     private var downY: Float = 0f
     private var swiped: Boolean = false
+    private var secondRound : Boolean = false
 
     override fun onTouch(v: View, event: MotionEvent ): Boolean {
         when (event.action) {
@@ -91,7 +96,13 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
 
     private fun spawnNewCard(v: View) {
         CoroutineScope(Dispatchers.Main).launch {
-            val newCardData = getNewCardData()
+            val newCardData : Movie
+            if (secondRound) {
+                newCardData =queueOfUsedMoviesById.poll()
+            }
+            else {
+                newCardData = getNewCardData(v)
+            }
             v.apply {
                 visibility = View.VISIBLE
                 alpha = 0f
@@ -124,16 +135,23 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
         animator.duration = 100
         animator.start()
     }
-    private suspend fun getNewCardData() : Movie  = withContext(Dispatchers.IO){
+    private suspend fun getNewCardData(v : View) : Movie  = withContext(Dispatchers.IO){
         var element:Movie
         do {
             element = db.getDao().getNextCard()
-        } while (setOfUsedMoviesById.contains(element.id))
+        } while (queueOfUsedMoviesById.contains(element))
 
-        if (setOfUsedMoviesById.size > 10){
-            setOfUsedMoviesById.clear()
+        if (queueOfUsedMoviesById.size == 9){
+            secondRound = true
+            withContext(Dispatchers.Main){
+                val roundSwapFragment = FragmentRoundSwap()
+                val transaction : FragmentTransaction = fragment.parentFragmentManager.beginTransaction()
+                transaction.replace(R.id.layoutForFragments, roundSwapFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
         }
-        setOfUsedMoviesById.add(element.id)
+        queueOfUsedMoviesById.add(element)
         return@withContext element
     }
 

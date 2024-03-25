@@ -26,7 +26,7 @@ class FragmentCardChoosing : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         card = view.findViewById(R.id.card)
-        card.setOnTouchListener(SwipeListener(requireContext()))
+        card.setOnTouchListener(SwipeListener(requireContext(),this))
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             // Вернуться на предыдущий фрагмент

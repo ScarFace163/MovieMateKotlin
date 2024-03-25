@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutForFragments"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/roundSwitchTitle"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardFilm"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:fontFamily="@font/the_stegris_black"
+            android:gravity="center"
+            android:text="Give the phone to the second person"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/myGif"
+            android:layout_width="wrap_content"
+            android:rotation="180"
+            android:layout_marginTop="30dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:src="@drawable/arrow_gif" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/buttonStartRound"
+            android:layout_width="100dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="Start"
+
+
+            android:background="@drawable/button_shape"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/the_stegris_black"
+
+            android:textSize="20dp"
+            />
+
+
+    </LinearLayout>
+</RelativeLayout>
