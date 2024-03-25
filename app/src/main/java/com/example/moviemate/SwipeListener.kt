@@ -56,6 +56,8 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
     }
 
     private fun onSwipeRight(v: View) {
+        if (swiped) return
+
         val animator = ObjectAnimator.ofFloat(v, "translationX", v.width.toFloat() + 60f)
         animator.interpolator = DecelerateInterpolator()
         animator.duration = 300
@@ -67,9 +69,12 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
                 spawnNewCard(v)
             }
         })
+        swiped = true
     }
 
     private fun onSwipeLeft(v: View) {
+        if (swiped) return
+
         val animator = ObjectAnimator.ofFloat(v, "translationX", -v.width.toFloat() - 60f)
         animator.interpolator = DecelerateInterpolator()
         animator.duration = 300
@@ -81,6 +86,7 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
                 resetCardPosition(v)
             }
         })
+        swiped = true
     }
 
     private fun spawnNewCard(v: View) {
@@ -124,7 +130,7 @@ class SwipeListener (private val context: Context): View.OnTouchListener {
             element = db.getDao().getNextCard()
         } while (setOfUsedMoviesById.contains(element.id))
 
-        if (setOfUsedMoviesById.size > 5){
+        if (setOfUsedMoviesById.size > 10){
             setOfUsedMoviesById.clear()
         }
         setOfUsedMoviesById.add(element.id)

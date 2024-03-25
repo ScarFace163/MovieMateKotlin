@@ -19,7 +19,7 @@ interface Dao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(movie: Movie)
     fun getNextCard(): Movie{
-        var rand : Int = (0 until 20).random()
+        var rand : Int = (1 until 21).random()
         val movie = getById(rand)
         return movie ?: getNextCard()
     }
