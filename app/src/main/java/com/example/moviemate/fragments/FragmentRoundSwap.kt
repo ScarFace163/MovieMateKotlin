@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -16,7 +17,7 @@ import com.example.moviemate.entities.Movie
 import java.util.Queue
 
 
-class FragmentRoundSwap(val q : Queue<Movie>) : Fragment() {
+class FragmentRoundSwap() : DialogFragment() {
     private lateinit var button: Button
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,14 +37,9 @@ class FragmentRoundSwap(val q : Queue<Movie>) : Fragment() {
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(gifImageView)
 
-        button = view.findViewById(R.id.buttonStartRound)
-
-        button.setOnClickListener {
-            val cardChoosingFragment = FragmentCardChoosing(true, q)
-            val transaction : FragmentTransaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.layoutForFragments,cardChoosingFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+        val closeButton = view.findViewById<Button>(R.id.buttonStartRound)
+        closeButton.setOnClickListener {
+            dismiss()
         }
     }
 

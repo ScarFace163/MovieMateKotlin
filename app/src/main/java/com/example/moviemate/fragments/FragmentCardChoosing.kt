@@ -14,7 +14,7 @@ import java.util.LinkedList
 import java.util.Queue
 
 
-class FragmentCardChoosing(val isSecondRound:Boolean = false, val q : Queue<Movie> = LinkedList<Movie>()) : Fragment() {
+class FragmentCardChoosing() : Fragment() {
 
     private lateinit var card : CardView
     override fun onCreateView(
@@ -28,7 +28,7 @@ class FragmentCardChoosing(val isSecondRound:Boolean = false, val q : Queue<Movi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         card = view.findViewById(R.id.card)
-        card.setOnTouchListener(SwipeListener(requireContext(),this , isSecondRound, q))
+        card.setOnTouchListener(SwipeListener(requireContext(),this))
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             // Вернуться на предыдущий фрагмент

@@ -23,16 +23,17 @@ import kotlinx.coroutines.withContext
 import java.util.LinkedList
 import java.util.Queue
 
-class SwipeListener(private val context: Context, private val fragment: Fragment, private val isSecondRound: Boolean, private val q: Queue<Movie> = LinkedList<Movie>()): View.OnTouchListener {
+class SwipeListener(private val context: Context, private val fragment: Fragment): View.OnTouchListener {
 
-    var queueOfUsedMoviesById:Queue<Movie> = q
-    var queueOfChoosedMoviesAfterFirstRound:Queue<Movie> = LinkedList<Movie>()
-    var queueOfResults:Queue<Movie> = LinkedList<Movie>()
+    var queueOfUsedMoviesById:ArrayDeque<Movie> = ArrayDeque<Movie>()
+    var queueOfChoosedMoviesAfterFirstRound: Queue<Movie> = LinkedList<Movie>()
+    var listOfResults:MutableList<Movie> = ArrayList<Movie>()
     private val db = MainDatabase.getDb(context)
     private var downX: Float = 0f
     private var downY: Float = 0f
     private var swiped: Boolean = false
-    private var secondRound : Boolean = isSecondRound
+    private var swipedLeft: Boolean = false
+    private var secondRound : Boolean = false
 
     override fun onTouch(v: View, event: MotionEvent ): Boolean {
         when (event.action) {
@@ -64,6 +65,7 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
 
     private fun onSwipeRight(v: View) {
         if (swiped) return
+        swipedLeft = false
         val animator = ObjectAnimator.ofFloat(v, "translationX", v.width.toFloat() + 60f)
         animator.interpolator = DecelerateInterpolator()
         animator.duration = 300
@@ -76,33 +78,30 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
                 resetCardPosition(v)
             }
         })
-        if (!secondRound) {
-            if (!queueOfUsedMoviesById.isEmpty()) queueOfChoosedMoviesAfterFirstRound.add(queueOfUsedMoviesById.peek())
+        val movieCheck: Movie
+        if (secondRound){
+            movieCheck = queueOfUsedMoviesById.removeLast()
+            if (queueOfChoosedMoviesAfterFirstRound.contains(movieCheck)){
+                listOfResults.add(movieCheck)
+            }
         }
         else{
-            val movieCheck = queueOfUsedMoviesById.peek()
-            if (movieCheck != null) {
-                Log.d("Movie", movieCheck.title)
-            }
-            if (queueOfChoosedMoviesAfterFirstRound.contains(movieCheck)){
-                queueOfResults.add(movieCheck)
+            if (!queueOfUsedMoviesById.isEmpty()) {
+                movieCheck = queueOfUsedMoviesById.last()
+                queueOfChoosedMoviesAfterFirstRound.add(queueOfUsedMoviesById.last())
             }
         }
-
-
-        Log.d("Queue of choosed after first", queueOfChoosedMoviesAfterFirstRound.toString())
-        Log.d("is SecondRound", secondRound.toString())
-        Log.d("Queue of results", queueOfResults.toString())
 
     }
 
     private fun onSwipeLeft(v: View) {
         if (swiped) return
-
+        swipedLeft = true
         val animator = ObjectAnimator.ofFloat(v, "translationX", -v.width.toFloat() - 60f)
         animator.interpolator = DecelerateInterpolator()
         animator.duration = 300
         animator.start()
+
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 v.visibility = View.GONE
@@ -110,15 +109,23 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
                 resetCardPosition(v)
             }
         })
-        swiped = true
+        Log.d("second" , secondRound.toString())
     }
 
     private fun spawnNewCard(v: View ) {
         CoroutineScope(Dispatchers.Main).launch {
-            val newCardData : Movie
+            var newCardData : Movie
             if (secondRound) {
-
-                newCardData =queueOfUsedMoviesById.poll()
+                try{
+                    if (!swipedLeft) {
+                        newCardData = queueOfUsedMoviesById.last()
+                    }
+                    else{
+                        newCardData = queueOfUsedMoviesById.removeLast()
+                    }
+                } catch (e: NoSuchElementException){
+                    newCardData = getNewCardData(v)
+                }
             }
             else {
                 newCardData = getNewCardData(v)
@@ -160,15 +167,15 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
         do {
             element = db.getDao().getNextCard()
         } while (queueOfUsedMoviesById.contains(element))
-        queueOfUsedMoviesById.add(element)
+
         if (queueOfUsedMoviesById.size == 10){
             withContext(Dispatchers.Main){
-                val roundSwapFragment = FragmentRoundSwap(queueOfUsedMoviesById)
-                val transaction : FragmentTransaction = fragment.parentFragmentManager.beginTransaction()
-                transaction.replace(R.id.layoutForFragments, roundSwapFragment)
-                transaction.addToBackStack(null)
-                transaction.commit()
+                val roundSwapFragment = FragmentRoundSwap()
+                secondRound = true
+                roundSwapFragment.show(fragment.parentFragmentManager, "roundSwap")
             }
+        }else{
+            queueOfUsedMoviesById.add(element)
         }
 
         return@withContext element
