@@ -5,14 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.cardview.widget.CardView
 import com.example.moviemate.R
 import com.example.moviemate.SwipeListener
+import com.example.moviemate.entities.Movie
+import java.util.LinkedList
+import java.util.Queue
 
 
-class FragmentCardChoosing : Fragment() {
+class FragmentCardChoosing(val isSecondRound:Boolean = false, val q : Queue<Movie> = LinkedList<Movie>()) : Fragment() {
 
     private lateinit var card : CardView
     override fun onCreateView(
@@ -26,7 +28,7 @@ class FragmentCardChoosing : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         card = view.findViewById(R.id.card)
-        card.setOnTouchListener(SwipeListener(requireContext(),this))
+        card.setOnTouchListener(SwipeListener(requireContext(),this , isSecondRound, q))
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             // Вернуться на предыдущий фрагмент
