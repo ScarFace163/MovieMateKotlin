@@ -18,6 +18,7 @@ class MoviesListAdapter(var movies : List<Movie>, var context : Context) : Recyc
         val description : TextView = view.findViewById(R.id.cardDescription)
         val image : ImageView = view.findViewById(R.id.cardImage)
         val year: TextView = view.findViewById(R.id.cardYear)
+        val categories : TextView = view.findViewById(R.id.cardCategories)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +33,8 @@ class MoviesListAdapter(var movies : List<Movie>, var context : Context) : Recyc
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = movies[position].title
         holder.description.text = movies[position].description
-
+        holder.year.text = movies[position].year.toString()
+        holder.categories.text = movies[position].categories
 
         val imageId = context.resources.getIdentifier(
             movies[position].image,
