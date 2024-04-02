@@ -15,6 +15,8 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.moviemate.db.MainDatabase
 import kotlin.math.abs
 import com.example.moviemate.entities.Movie
+import com.example.moviemate.fragments.FragmentCardChoosing
+import com.example.moviemate.fragments.FragmentChoosedMovies
 import com.example.moviemate.fragments.FragmentRoundSwap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -124,7 +126,8 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
                         newCardData = queueOfUsedMoviesById.removeLast()
                     }
                 } catch (e: NoSuchElementException){
-                    newCardData = getNewCardData(v)
+                    switchToFragmentChoosedMovies()
+                    newCardData = Movie(0, "",0,"","", "")
                 }
             }
             else {
@@ -179,6 +182,13 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
         }
 
         return@withContext element
+    }
+    private fun switchToFragmentChoosedMovies() {
+        val fragmentChoosedMovies = FragmentChoosedMovies(listOfResults)
+        val transaction: FragmentTransaction = fragment.parentFragmentManager.beginTransaction()
+        transaction.replace(R.id.layoutForFragments, fragmentChoosedMovies)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
 
