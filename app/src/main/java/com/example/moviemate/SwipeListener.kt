@@ -68,6 +68,28 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
     private fun onSwipeRight(v: View) {
         if (swiped) return
         swipedLeft = false
+        swiped = true
+        val movieCheck: Movie
+        if (secondRound){
+            try{
+                movieCheck = queueOfUsedMoviesById.last()
+                if (queueOfChoosedMoviesAfterFirstRound.contains(movieCheck)){
+                    listOfResults.add(movieCheck)
+                }
+            }catch(e: NoSuchElementException){
+                switchToFragmentChoosedMovies()
+            }
+
+        }
+        else{
+            if (!queueOfUsedMoviesById.isEmpty()) {
+                movieCheck = queueOfUsedMoviesById.last()
+                queueOfChoosedMoviesAfterFirstRound.add(queueOfUsedMoviesById.last())
+            }
+        }
+        if (secondRound){
+            queueOfUsedMoviesById.removeLast()
+        }
         val animator = ObjectAnimator.ofFloat(v, "translationX", v.width.toFloat() + 60f)
         animator.interpolator = DecelerateInterpolator()
         animator.duration = 300
@@ -80,25 +102,18 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
                 resetCardPosition(v)
             }
         })
-        val movieCheck: Movie
-        if (secondRound){
-            movieCheck = queueOfUsedMoviesById.removeLast()
-            if (queueOfChoosedMoviesAfterFirstRound.contains(movieCheck)){
-                listOfResults.add(movieCheck)
-            }
-        }
-        else{
-            if (!queueOfUsedMoviesById.isEmpty()) {
-                movieCheck = queueOfUsedMoviesById.last()
-                queueOfChoosedMoviesAfterFirstRound.add(queueOfUsedMoviesById.last())
-            }
-        }
+
+
 
     }
 
     private fun onSwipeLeft(v: View) {
         if (swiped) return
         swipedLeft = true
+        swiped=true
+        if (secondRound){
+            queueOfUsedMoviesById.removeLast()
+        }
         val animator = ObjectAnimator.ofFloat(v, "translationX", -v.width.toFloat() - 60f)
         animator.interpolator = DecelerateInterpolator()
         animator.duration = 300
@@ -111,6 +126,7 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
                 resetCardPosition(v)
             }
         })
+
         Log.d("second" , secondRound.toString())
     }
 
@@ -119,12 +135,7 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
             var newCardData : Movie
             if (secondRound) {
                 try{
-                    if (!swipedLeft) {
-                        newCardData = queueOfUsedMoviesById.last()
-                    }
-                    else{
-                        newCardData = queueOfUsedMoviesById.removeLast()
-                    }
+                    newCardData = queueOfUsedMoviesById.last()
                 } catch (e: NoSuchElementException){
                     switchToFragmentChoosedMovies()
                     newCardData = Movie(0, "",0,"","", "")
@@ -171,11 +182,13 @@ class SwipeListener(private val context: Context, private val fragment: Fragment
             element = db.getDao().getNextCard()
         } while (queueOfUsedMoviesById.contains(element))
 
-        if (queueOfUsedMoviesById.size == 10){
+        if (queueOfUsedMoviesById.size ==15 ){
             withContext(Dispatchers.Main){
                 val roundSwapFragment = FragmentRoundSwap()
                 secondRound = true
                 roundSwapFragment.show(fragment.parentFragmentManager, "roundSwap")
+                element = queueOfUsedMoviesById.last()
+                return@withContext element
             }
         }else{
             queueOfUsedMoviesById.add(element)
