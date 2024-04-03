@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutForFragments"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
+
+    <TextView
+        android:id="@+id/roundStartSwipeRightText"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:fontFamily="@font/the_stegris_black"
+        android:gravity="center"
+        android:text="Swipe left if you don't want to watch this movie"
+        android:textSize="25dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold" />
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="209dp"
+        android:layout_height="273dp"
+        android:src="@drawable/arrows_for_start_round"
+        android:layout_marginTop="150dp"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:id="@+id/roundStartSwipeLeftText"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="380dp"
+        android:fontFamily="@font/the_stegris_black"
+        android:gravity="center"
+        android:text="Swipe right if you want to watch this movie"
+        android:textSize="25dp"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonStartFirstRound"
+        android:layout_width="200dp"
+        android:layout_marginTop="500dp"
+        android:layout_gravity="center"
+        android:layout_height="50dp"
+        android:text="Start"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button_shape"
+        android:fontFamily="@font/the_stegris_black"
+
+        android:textSize="20dp"
+        />
+
+</RelativeLayout>

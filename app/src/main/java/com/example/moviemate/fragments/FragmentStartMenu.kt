@@ -30,11 +30,16 @@ class FragmentStartMenu : Fragment() {
         buttonList = view.findViewById(R.id.buttonList)
 
         buttonStart.setOnClickListener {
-            val cardChoosingFragment = FragmentCardChoosing()
+            val roundStartFragment = FragmenRoundStart()
             val transaction : FragmentTransaction = parentFragmentManager.beginTransaction()
-            transaction.replace(R.id.layoutForFragments,cardChoosingFragment)
+            transaction.replace(R.id.layoutForFragments,roundStartFragment)
             transaction.addToBackStack(null)
             transaction.commit()
+//            val cardChoosingFragment = FragmentCardChoosing()
+//            val transaction : FragmentTransaction = parentFragmentManager.beginTransaction()
+//            transaction.replace(R.id.layoutForFragments,cardChoosingFragment)
+//            transaction.addToBackStack(null)
+//            transaction.commit()
         }
         buttonList.setOnClickListener {
             val moviesListFragment = MoviesListFragment()
