@@ -15,11 +15,12 @@ interface Dao {
 
     @Query("SELECT * FROM movieDatabase WHERE id = :moveId")
     fun getById(moveId: Int): Movie?
-
+    @Query("SELECT COUNT(*) FROM movieDatabase")
+    fun getCount(): Int
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(movie: Movie)
     fun getNextCard(): Movie{
-        var rand : Int = (1 until 41).random()
+        var rand : Int = (1 until getCount()+1).random()
         val movie = getById(rand)
         return movie ?: getNextCard()
     }
